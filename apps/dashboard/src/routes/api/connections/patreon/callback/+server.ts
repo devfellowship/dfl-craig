@@ -5,6 +5,7 @@ import { env } from '$env/dynamic/private';
 import { env as envPub } from '$env/dynamic/public';
 import { PATREON_REDIRECT_URI } from '$lib/oauth';
 import { checkAuth } from '$lib/server/discord';
+import { logger } from '$lib/server/logger';
 import { determineRewardTier, type PatreonIdentifyResponse, resolveUserEntitlement } from '$lib/server/patreon';
 import { rateLimitRequest, validateOAuthState } from '$lib/server/redis';
 
@@ -23,7 +24,15 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) =>
   const error = url.searchParams.get('error');
   if (error) return redirect(307, `/?error=${encodeURIComponent(error)}&from=patreon`);
   const state = url.searchParams.get('state');
-  if (!state || !(await validateOAuthState(state, auth.id))) return redirect(307, '/?error=__INVALID_STATE&from=patreon');
+  if (!state) {
+    logger.warn(`OAuth connection rejected: missing state (user=${auth.id}, service=patreon)`);
+    return redirect(307, '/?error=__INVALID_STATE&from=patreon');
+  }
+  const isStateValid = await validateOAuthState(state, auth.id);
+  if (!isStateValid) {
+    logger.warn(`OAuth connection rejected: invalid state (user=${auth.id}, service=patreon, state=${state})`);
+    return redirect(307, '/?error=__INVALID_STATE&from=patreon');
+  }
   const code = url.searchParams.get('code');
   if (!code || typeof code !== 'string') return redirect(307, '/');
 
@@ -53,17 +62,24 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) =>
   ).then((res) => res.json());
   if (!('data' in me)) return redirect(307, '/?error=__NO_USER_DATA&from=patreon');
 
-  // console.log(`User ${auth.id} connected patreon user ${me.data.id}`, JSON.stringify(me, null, 2));
-  console.log(`User ${auth.id} connected patreon user ${me.data.id}`);
+  logger.info(`OAuth connection established (user=${auth.id}, service=patreon, serviceUserId=${me.data.id})`);
 
   const otherUser = await prisma.user.findFirst({ where: { patronId: me.data.id } });
-  if (otherUser && otherUser.id !== auth.id) await prisma.user.update({ where: { id: otherUser.id }, data: { patronId: null } });
+  if (otherUser && otherUser.id !== auth.id) {
+    logger.info(`Previous user ID from patreon being removed (user=${auth.id}, service=patreon, serviceUserId=${me.data.id}, otherUserId=${otherUser.id})`);
+    await prisma.user.update({ where: { id: otherUser.id }, data: { patronId: null } });
+  }
 
   // Update patron status
   const membership = me.included.find((i) => i.type === 'member');
   if (membership?.attributes.patron_status === 'active_patron') {
     const linkedDiscordId = me.data?.attributes.social_connections?.discord?.user_id;
-    if (linkedDiscordId && auth.id !== linkedDiscordId) return redirect(307, '/?error=__USER_ID_MISMATCH&from=patreon');
+    if (linkedDiscordId && auth.id !== linkedDiscordId) {
+      logger.warn(
+        `Patreon Discord ID mismatch during connect (user=${auth.id}, service=patreon, serviceUserId=${me.data.id}, linkedDiscordId=${linkedDiscordId})`
+      );
+      return redirect(307, '/?error=__USER_ID_MISMATCH&from=patreon');
+    }
 
     const patron = await prisma.patreon.upsert({
       where: { id: me.data.id },
@@ -106,7 +122,9 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) =>
           sourceEntitlementId: membership.id
         }
       });
-      console.log(`User ${auth.id} tier resolved to ${patreonTier}`);
+      logger.info(
+        `Patreon tier resolved (user=${auth.id}, service=patreon, serviceUserId=${me.data.id}, tier=${patreonTier})`
+      );
     }
 
     await resolveUserEntitlement(auth.id);

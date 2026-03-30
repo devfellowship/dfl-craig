@@ -6,6 +6,7 @@ import { env } from '$env/dynamic/private';
 import { env as envPub } from '$env/dynamic/public';
 import { toRedirectUri } from '$lib/oauth';
 import { checkAuth } from '$lib/server/discord';
+import { logger } from '$lib/server/logger';
 import { dbxAuth, dropboxScopes } from '$lib/server/oauth';
 import { rateLimitRequest, validateOAuthState } from '$lib/server/redis';
 
@@ -26,7 +27,15 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) =>
   const error = url.searchParams.get('error');
   if (error) return redirect(307, `/?error=${encodeURIComponent(error)}&from=dropbox`);
   const state = url.searchParams.get('state');
-  if (!state || !(await validateOAuthState(state, auth.id))) return redirect(307, '/?error=__INVALID_STATE&from=dropbox');
+  if (!state) {
+    logger.warn(`OAuth connection rejected: missing state (user=${auth.id}, service=dropbox)`);
+    return redirect(307, '/?error=__INVALID_STATE&from=dropbox');
+  }
+  const isStateValid = await validateOAuthState(state, auth.id);
+  if (!isStateValid) {
+    logger.warn(`OAuth connection rejected: invalid state (user=${auth.id}, service=dropbox, state=${state})`);
+    return redirect(307, '/?error=__INVALID_STATE&from=dropbox');
+  }
   const code = url.searchParams.get('code');
   if (!code || typeof code !== 'string') return redirect(307, '/');
 
@@ -44,6 +53,10 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) =>
     });
 
     const dropboxUser = await dbx.usersGetCurrentAccount();
+
+    logger.info(
+      `OAuth connection established (user=${user.id}, service=dropbox, serviceUserId=${dropboxUser.result.account_id})`
+    );
 
     await prisma.dropboxUser.upsert({
       where: { id: user.id },

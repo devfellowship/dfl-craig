@@ -5,6 +5,7 @@ import { env } from '$env/dynamic/private';
 import { env as envPub } from '$env/dynamic/public';
 import { microsoftScopes, toRedirectUri } from '$lib/oauth';
 import { checkAuth } from '$lib/server/discord';
+import { logger } from '$lib/server/logger';
 import { rateLimitRequest, validateOAuthState } from '$lib/server/redis';
 
 import type { RequestHandler } from './$types';
@@ -20,6 +21,7 @@ export interface MicrosoftOAuthResponse {
 }
 
 export interface MicrosoftUser {
+  id: string;
   displayName: string;
   userPrincipalName: string;
 }
@@ -39,7 +41,15 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) =>
   const error = url.searchParams.get('error');
   if (error) return redirect(307, `/?error=${encodeURIComponent(error)}&from=microsoft`);
   const state = url.searchParams.get('state');
-  if (!state || !(await validateOAuthState(state, auth.id))) return redirect(307, '/?error=__INVALID_STATE&from=microsoft');
+  if (!state) {
+    logger.warn(`OAuth connection rejected: missing state (user=${auth.id}, service=microsoft)`);
+    return redirect(307, '/?error=__INVALID_STATE&from=microsoft');
+  }
+  const isStateValid = await validateOAuthState(state, auth.id);
+  if (!isStateValid) {
+    logger.warn(`OAuth connection rejected: invalid state (user=${auth.id}, service=microsoft, state=${state})`);
+    return redirect(307, '/?error=__INVALID_STATE&from=microsoft');
+  }
   const code = url.searchParams.get('code');
   if (!code || typeof code !== 'string') return redirect(307, '/');
 
@@ -76,6 +86,8 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) =>
     }).then((res) => res.json());
 
     if (!('displayName' in me) || !('userPrincipalName' in me)) return redirect(307, `/?error=__NO_USER_DATA&from=microsoft`);
+
+    logger.info(`OAuth connection established (user=${user.id}, service=microsoft, serviceUserId=${me.id})`);
 
     await prisma.microsoftUser.upsert({
       where: { id: user.id },

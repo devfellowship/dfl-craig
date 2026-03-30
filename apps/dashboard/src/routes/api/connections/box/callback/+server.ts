@@ -4,6 +4,7 @@ import { redirect } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { env as envPub } from '$env/dynamic/public';
 import { checkAuth } from '$lib/server/discord';
+import { logger } from '$lib/server/logger';
 import { rateLimitRequest, validateOAuthState } from '$lib/server/redis';
 
 import type { RequestHandler } from './$types';
@@ -37,7 +38,15 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) =>
   const error = url.searchParams.get('error');
   if (error) return redirect(307, `/?error=${encodeURIComponent(error)}&from=box`);
   const state = url.searchParams.get('state');
-  if (!state || !(await validateOAuthState(state, auth.id))) return redirect(307, '/?error=__INVALID_STATE&from=box');
+  if (!state) {
+    logger.warn(`OAuth connection rejected: missing state (user=${auth.id}, service=box)`);
+    return redirect(307, '/?error=__INVALID_STATE&from=box');
+  }
+  const isStateValid = await validateOAuthState(state, auth.id);
+  if (!isStateValid) {
+    logger.warn(`OAuth connection rejected: invalid state (user=${auth.id}, service=box, state=${state})`);
+    return redirect(307, '/?error=__INVALID_STATE&from=box');
+  }
   const code = url.searchParams.get('code');
   if (!code || typeof code !== 'string') return redirect(307, '/');
 
@@ -61,6 +70,8 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) =>
     const me: BoxUser = await fetch('https://api.box.com/2.0/users/me', {
       headers: { Authorization: `Bearer ${response.access_token}` }
     }).then((res) => res.json());
+
+    logger.info(`OAuth connection established (user=${user.id}, service=box, serviceUserId=${me?.id ?? 'unknown'})`);
 
     await prisma.boxUser.upsert({
       where: { id: user.id },
