@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) =>
   ).then((res) => res.json());
   if (!('data' in me)) return redirect(307, '/?error=__NO_USER_DATA&from=patreon');
 
-  logger.info(`OAuth connection established (user=${auth.id}, service=patreon, serviceUserId=${me.data.id})`);
+  logger.info(`OAuth connection established (user=${auth.id}, service=patreon, serviceUserId=${me.data.id})`, me);
 
   const otherUser = await prisma.user.findFirst({ where: { patronId: me.data.id } });
   if (otherUser && otherUser.id !== auth.id) {
