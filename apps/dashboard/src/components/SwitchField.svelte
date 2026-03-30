@@ -22,7 +22,7 @@
     <Label.Root
       id={`${id}-label`}
       for={id}
-      class={cn('text-base font-medium leading-none text-neutral-200 peer-disabled:cursor-not-allowed sm:text-lg', labelClass)}
+      class={cn('text-base leading-none font-medium text-neutral-200 peer-disabled:cursor-not-allowed sm:text-lg', labelClass)}
     >
       {label}
     </Label.Root>
@@ -40,7 +40,7 @@
     {id}
     aria-labelledby={`${id}-switch`}
     class={cn(
-      'focus-visible:outline-hidden inline-flex h-[36px] min-h-[36px] w-[60px] flex-none shrink-0 cursor-pointer items-center rounded-full px-[3px] transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-teal-500 data-[state=unchecked]:bg-zinc-600',
+      'inline-flex h-[36px] min-h-[36px] w-[60px] flex-none shrink-0 cursor-pointer items-center rounded-full px-[3px] transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-800 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-teal-500 data-[state=unchecked]:bg-zinc-600',
       switchClass
     )}
     bind:checked

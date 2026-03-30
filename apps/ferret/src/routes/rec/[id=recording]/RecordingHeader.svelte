@@ -123,7 +123,7 @@
   </div>
 {/snippet}
 
-<div class="shadow-section z-[1] inline-flex flex-col items-start justify-start rounded-2xl bg-zinc-900">
+<div class="z-[1] inline-flex flex-col items-start justify-start rounded-2xl bg-zinc-900 shadow-section">
   <div class="inline-flex w-full flex-col items-center justify-center gap-3 px-6 pb-1 pt-4 text-left sm:flex-row sm:gap-6 sm:pb-4 sm:text-center">
     <div
       class="relative flex h-28 w-28 select-none items-center justify-center gap-2.5 overflow-hidden rounded-2xl border-4 border-zinc-800 bg-zinc-800 shadow-lg"
@@ -136,7 +136,7 @@
     </div>
     <div class="inline-flex shrink grow basis-0 flex-col items-center justify-center gap-1.5 sm:items-start">
       <div class="flex flex-col items-center justify-center sm:items-start">
-        <div class="font-display text-center text-xl font-semibold text-zinc-100 sm:text-left sm:text-2xl">{recording.guild.name}</div>
+        <div class="text-center font-display text-xl font-semibold text-zinc-100 sm:text-left sm:text-2xl">{recording.guild.name}</div>
         <div
           class="inline-flex w-full flex-wrap items-center justify-center gap-1 text-base font-medium sm:items-start sm:justify-start sm:gap-2 sm:text-xl"
         >
@@ -189,7 +189,7 @@
   </div>
   {#if users.length !== 0}
     <div class="inline-flex w-full flex-col items-center justify-center gap-2 px-6 pb-4 pt-1 sm:items-start sm:pt-4">
-      <div class="font-display flex w-full justify-between gap-2 text-center text-base font-semibold text-neutral-300 sm:text-xl">
+      <div class="flex w-full justify-between gap-2 text-center font-display text-base font-semibold text-neutral-300 sm:text-xl">
         <span>
           {$t('recording.users_recorded', { values: { count: users.length } })}
         </span>

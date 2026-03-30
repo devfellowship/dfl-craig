@@ -477,7 +477,9 @@ export class MixedProcessor {
       const cacheBeforeFinalize = this.mixCache.length;
       await this.processMix(true);
 
-      console.debug(`[Minizel] Final mix done. Cache before: ${cacheBeforeFinalize}, Samples written: ${this.samplesWritten}, Position: ${this.currentMixPosition}`);
+      console.debug(
+        `[Minizel] Final mix done. Cache before: ${cacheBeforeFinalize}, Samples written: ${this.samplesWritten}, Position: ${this.currentMixPosition}`
+      );
 
       // Finalize output
       await this.queue.done();

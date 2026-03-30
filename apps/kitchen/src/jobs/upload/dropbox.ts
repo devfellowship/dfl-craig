@@ -31,8 +31,7 @@ export async function dropboxPreflight(userId: string) {
     await dbx.usersGetCurrentAccount();
   } catch (e) {
     logger.warn(`Error in dropbox preflight for user ${userId}`, e);
-    if (e instanceof DropboxResponseError && (e.status === 401 || e.status === 403))
-      await prisma.dropboxUser.delete({ where: { id: userId } });
+    if (e instanceof DropboxResponseError && (e.status === 401 || e.status === 403)) await prisma.dropboxUser.delete({ where: { id: userId } });
     return false;
   }
 

@@ -22,7 +22,7 @@
 <Portal target="body">
   <div
     transition:fade={{ duration: 100 }}
-    class="fixed bottom-0 left-0 right-0 top-0 z-30 flex select-none items-center justify-center bg-black/40 px-2 backdrop-blur-sm md:px-8"
+    class="fixed top-0 right-0 bottom-0 left-0 z-30 flex items-center justify-center bg-black/40 px-2 backdrop-blur-sm select-none md:px-8"
     aria-hidden="true"
     onclick={onModalClick}
     use:trapFocus

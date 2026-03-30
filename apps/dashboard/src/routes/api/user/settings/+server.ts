@@ -1,14 +1,14 @@
+import { prisma } from '@craig/db';
 import { json } from '@sveltejs/kit';
 import { destr } from 'destr';
 import { z } from 'zod';
 
 import { checkAuth } from '$lib/server/discord';
-
-import type { RequestHandler } from './$types';
 import { rateLimitRequest } from '$lib/server/redis';
 import { errorResponse } from '$lib/server/util';
 import { APIErrorCode } from '$lib/types';
-import { prisma } from '@craig/db';
+
+import type { RequestHandler } from './$types';
 
 const Schema = z
   .object({

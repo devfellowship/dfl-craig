@@ -1,11 +1,13 @@
+import { prisma } from '@craig/db';
+import { redirect } from '@sveltejs/kit';
+
 import { env } from '$env/dynamic/private';
 import { env as envPub } from '$env/dynamic/public';
+import { microsoftScopes, toRedirectUri } from '$lib/oauth';
 import { checkAuth } from '$lib/server/discord';
 import { rateLimitRequest, validateOAuthState } from '$lib/server/redis';
-import { redirect } from '@sveltejs/kit';
+
 import type { RequestHandler } from './$types';
-import { microsoftScopes, toRedirectUri } from '$lib/oauth';
-import { prisma } from '@craig/db';
 
 export interface MicrosoftOAuthResponse {
   token_type: string;
@@ -57,7 +59,9 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) =>
     }).then((res) => res.json());
 
     if ('error' in response) {
-      console.error(`Failed to connect user ${auth.id} to Microsoft: ${'error_description' in response ? response.error_description : response.error}`);
+      console.error(
+        `Failed to connect user ${auth.id} to Microsoft: ${'error_description' in response ? response.error_description : response.error}`
+      );
       return redirect(307, `/?error=__NO_ACCESS_TOKEN&from=microsoft`);
     }
 

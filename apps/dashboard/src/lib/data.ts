@@ -1,9 +1,9 @@
+import { get, writable } from 'svelte/store';
+import { t } from 'svelte-i18n';
 import { toast } from 'svelte-sonner';
 
 import { invalidateAll } from '$app/navigation';
-import { get, writable } from 'svelte/store';
 import { APIErrorCode, type APIErrorResponse } from '$lib/types';
-import { t } from 'svelte-i18n';
 
 export const savingSettings = writable(false);
 

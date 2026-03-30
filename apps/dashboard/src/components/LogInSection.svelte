@@ -16,7 +16,7 @@
   </div>
 
   <a
-    class="bg-discord/75 hover:bg-discord/90 active:scale-98 active:bg-discord relative flex flex-none cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg px-4 py-2 text-white backdrop-blur-sm transition-all ease-out sm:gap-4 sm:px-8 sm:py-4 sm:text-lg"
+    class="bg-discord/75 hover:bg-discord/90 active:bg-discord relative flex flex-none cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg px-4 py-2 text-white backdrop-blur-sm transition-all ease-out active:scale-98 sm:gap-4 sm:px-8 sm:py-4 sm:text-lg"
     href={`/api/login?next=${encodeURIComponent(next ?? page.url.pathname + page.url.search)}`}
   >
     <Icon icon={discordIcon} class="size-6" />

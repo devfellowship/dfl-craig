@@ -32,6 +32,6 @@
     </div>
   </div>
   {#if user.bot}
-    <div class="bg-discord rounded px-1 text-xs font-semibold uppercase text-white">{$t('common.app')}</div>
+    <div class="rounded bg-discord px-1 text-xs font-semibold uppercase text-white">{$t('common.app')}</div>
   {/if}
 </div>

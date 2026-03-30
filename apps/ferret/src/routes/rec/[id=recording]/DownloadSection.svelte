@@ -72,7 +72,7 @@
     </div>
   </div>
 {:else if !$jobOpen}
-  <div class="shadow-section z-[1] inline-flex flex-col justify-start rounded-2xl bg-zinc-900">
+  <div class="z-[1] inline-flex flex-col justify-start rounded-2xl bg-zinc-900 shadow-section">
     <div class="self-stretch px-6 pb-3 pt-6">
       <h2 class="font-display text-xl font-bold text-neutral-100 sm:text-2xl">{$t('download.sections.downloads')}</h2>
       <button class="text-sm font-medium transition-colors hover:text-neutral-200" onclick={() => (showWDIU = true)}

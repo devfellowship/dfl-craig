@@ -29,7 +29,7 @@
   onclick={() => (modalOpen = true)}
 >
   <div class="z-10 flex flex-col justify-center gap-1 sm:w-max">
-    <span class="font-display text-bg text-xl font-bold text-white">{$t('download.avatar_overlays.button_name')}</span>
+    <span class="text-bg font-display text-xl font-bold text-white">{$t('download.avatar_overlays.button_name')}</span>
     <span class="text-bg text-sm text-neutral-300">{$t('download.avatar_overlays.button_description')}</span>
   </div>
 

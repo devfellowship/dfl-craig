@@ -1,11 +1,13 @@
+import { prisma } from '@craig/db';
+import { json } from '@sveltejs/kit';
+
+import { setNextAvailableService } from '$lib/server/data';
 import { checkAuth } from '$lib/server/discord';
 import { rateLimitRequest } from '$lib/server/redis';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { prisma } from '@craig/db';
 import { errorResponse } from '$lib/server/util';
 import { APIErrorCode } from '$lib/types';
-import { setNextAvailableService } from '$lib/server/data';
+
+import type { RequestHandler } from './$types';
 
 export const DELETE: RequestHandler = async ({ cookies, getClientAddress }) => {
   const rlResponse = await rateLimitRequest({ cookies, getClientAddress }, { prefix: 'disconnect-dropbox', limit: 5, window: 60 });

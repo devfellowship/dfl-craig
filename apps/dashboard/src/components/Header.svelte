@@ -8,7 +8,7 @@
   import LanguageButton from './LanguageButton.svelte';
 </script>
 
-<header class="absolute left-0 right-0 z-[1] mx-auto flex w-full max-w-4xl items-center justify-between p-2 sm:p-6">
+<header class="absolute right-0 left-0 z-[1] mx-auto flex w-full max-w-4xl items-center justify-between p-2 sm:p-6">
   <div class="font-display relative flex items-center justify-center gap-1 text-xl text-white sm:gap-2 sm:text-3xl">
     <a class="group flex items-center justify-center gap-2 sm:gap-3" href="https://craig.chat" target="_blank">
       <enhanced:img
@@ -22,7 +22,7 @@
         {#if env.PUBLIC_CRAIG_ENV === 'nightly' || env.PUBLIC_CRAIG_ENV === 'development'}
           <span
             class={cn(
-              'pointer-events-none absolute -bottom-2 right-0 rounded text-xs font-bold capitalize leading-none',
+              'pointer-events-none absolute right-0 -bottom-2 rounded text-xs leading-none font-bold capitalize',
               env.PUBLIC_CRAIG_ENV === 'nightly' ? 'text-purple-400' : 'text-red-400'
             )}
           >

@@ -1,13 +1,15 @@
+import { prisma } from '@craig/db';
+import { redirect } from '@sveltejs/kit';
 import { Dropbox } from 'dropbox';
+
 import { env } from '$env/dynamic/private';
 import { env as envPub } from '$env/dynamic/public';
-import { checkAuth } from '$lib/server/discord';
-import { rateLimitRequest, validateOAuthState } from '$lib/server/redis';
-import { redirect } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 import { toRedirectUri } from '$lib/oauth';
-import { prisma } from '@craig/db';
+import { checkAuth } from '$lib/server/discord';
 import { dbxAuth, dropboxScopes } from '$lib/server/oauth';
+import { rateLimitRequest, validateOAuthState } from '$lib/server/redis';
+
+import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ cookies, getClientAddress, url }) => {
   if (!envPub.PUBLIC_DROPBOX_CLIENT_ID || !env.DROPBOX_CLIENT_SECRET) return redirect(307, '/?error=__NO_ACCESS_TOKEN&from=dropbox');

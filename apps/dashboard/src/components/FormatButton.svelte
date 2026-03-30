@@ -38,7 +38,7 @@
       @apply flex items-center justify-center gap-1;
 
       & > small {
-        @apply whitespace-nowrap text-sm font-normal;
+        @apply text-sm font-normal whitespace-nowrap;
       }
     }
 

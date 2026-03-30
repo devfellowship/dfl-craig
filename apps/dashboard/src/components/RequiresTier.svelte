@@ -34,7 +34,7 @@
   )}
 >
   <div
-    class={cn('drop-shadow-black/50 flex max-w-2xl items-center gap-2 text-lg tracking-tight text-neutral-300 drop-shadow-md md:text-xl', {
+    class={cn('flex max-w-2xl items-center gap-2 text-lg tracking-tight text-neutral-300 drop-shadow-md drop-shadow-black/50 md:text-xl', {
       'text-lg md:text-xl': !small,
       'md:text-lg': small
     })}
@@ -51,7 +51,7 @@
   <div class="flex flex-wrap items-center justify-center gap-3">
     <a
       href={noTier ? `https://patreon.com/${env.PUBLIC_PATREON_URL}` : `https://www.patreon.com/settings/memberships/${env.PUBLIC_PATREON_URL}`}
-      class={cn('active:scale-98 rounded-lg bg-white/90 font-medium text-black transition-all hover:bg-white', {
+      class={cn('rounded-lg bg-white/90 font-medium text-black transition-all hover:bg-white active:scale-98', {
         'px-4 py-2': !small,
         'px-4 py-1 text-sm': small
       })}

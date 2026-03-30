@@ -1,12 +1,13 @@
 import { randomBytes } from 'node:crypto';
 
+import { getSemaphore } from '@henrygd/semaphore';
+import { json, type RequestEvent } from '@sveltejs/kit';
 import Redis from 'ioredis';
 import jwt from 'jsonwebtoken';
 
-import { REDIS_OPTIONS } from './config';
-import { getSemaphore } from '@henrygd/semaphore';
-import { json, type RequestEvent } from '@sveltejs/kit';
 import { JWT_SECRET } from '$env/static/private';
+
+import { REDIS_OPTIONS } from './config';
 
 export const redis = new Redis(REDIS_OPTIONS);
 
@@ -105,4 +106,3 @@ export async function validateOAuthState(state: string, userId: string): Promise
   await redis.del(`oauth_connect_state:${state}`);
   return true;
 }
-

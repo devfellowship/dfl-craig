@@ -1,8 +1,8 @@
 import { type ClassValue, clsx } from 'clsx';
 import { writable } from 'svelte/store';
+import { twMerge } from 'tailwind-merge';
 
 import { defaultLocale } from './i18n';
-import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -118,7 +118,7 @@ export function convertToTimeMark(seconds: number): string {
 }
 
 export const currentTime = writable(Math.floor(Date.now() / 1000), (set, update) => {
-  const interval = setInterval(() => update((time) => (time += 1)), 1000);
+  const interval = setInterval(() => update((time) => time + 1), 1000);
   return () => clearInterval(interval);
 });
 

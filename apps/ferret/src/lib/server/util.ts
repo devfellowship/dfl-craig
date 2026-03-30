@@ -144,8 +144,7 @@ export async function deleteRecording(recordingId: string) {
 
 export async function markRecordingDeleted(recordingId: string, info: RecordingInfo) {
   const startTimeMs = new Date(info.startTime).getTime();
-  const expiryMs =
-    (Number.isFinite(startTimeMs) ? startTimeMs : Date.now()) + info.expiresAfter * 60 * 60 * 1000;
+  const expiryMs = (Number.isFinite(startTimeMs) ? startTimeMs : Date.now()) + info.expiresAfter * 60 * 60 * 1000;
   const ttlSeconds = Math.max(1, Math.ceil((expiryMs - Date.now()) / 1000));
   const deletedAt = Date.now();
   await redis.set(`recording:deleted:${recordingId}`, String(deletedAt), 'EX', ttlSeconds);

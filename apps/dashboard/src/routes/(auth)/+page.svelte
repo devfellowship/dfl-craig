@@ -82,7 +82,7 @@
 
 {#if user.banner_color}
   <div
-    class="pointer-events-none absolute left-0 right-0 top-0 h-64 bg-gradient-to-b from-white to-transparent opacity-20"
+    class="pointer-events-none absolute top-0 right-0 left-0 h-64 bg-gradient-to-b from-white to-transparent opacity-20"
     style={`--tw-gradient-from: ${user.banner_color}`}
   ></div>
 {/if}
@@ -105,12 +105,12 @@
         <img
           src={CDNEndpoints.AVATAR_DECORATION(avatarDecorationAsset)}
           alt="avatar decoration"
-          class="scale-120 pointer-events-none absolute top-0 h-full w-full select-none"
+          class="pointer-events-none absolute top-0 h-full w-full scale-120 select-none"
         />
       {/if}
     </div>
     <div class="flex w-full flex-1 flex-col">
-      <h2 class="flex w-full items-center text-lg font-medium leading-none text-white sm:text-2xl">
+      <h2 class="flex w-full items-center text-lg leading-none font-medium text-white sm:text-2xl">
         <span class="overflow-hidden text-ellipsis">{user.global_name}</span>
         {#if primaryGuild?.identity_enabled && primaryGuild?.identity_guild_id && primaryGuild?.badge}
           <div class="ml-2 flex flex-none gap-0.5 rounded bg-neutral-600/50 px-1 py-0.5 text-xs font-bold">
@@ -220,7 +220,7 @@
   {/if}
 
   {#if tier === 0}
-    <h3 class="mb-2 mt-4 text-lg font-bold text-neutral-200 sm:text-xl">{$t('supporter_troubleshoot.header')}</h3>
+    <h3 class="mt-4 mb-2 text-lg font-bold text-neutral-200 sm:text-xl">{$t('supporter_troubleshoot.header')}</h3>
     <span>
       {$t('supporter_troubleshoot.line_1')}
     </span>
@@ -232,7 +232,7 @@
     </span>
   {/if}
 
-  <h2 class="mb-2 mt-10 text-xl font-bold text-white sm:text-2xl">{$t('headers.cloud_backup')}</h2>
+  <h2 class="mt-10 mb-2 text-xl font-bold text-white sm:text-2xl">{$t('headers.cloud_backup')}</h2>
   {#if tier === 0}
     <RequiresTier minTier={10} />
   {:else}

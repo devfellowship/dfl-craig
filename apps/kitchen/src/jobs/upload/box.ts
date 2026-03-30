@@ -245,7 +245,8 @@ export async function boxUpload(job: Job, info: RecordingInfo, fileName: string)
     throw new UploadError(
       authInvalidated
         ? 'Your authentication to Box has been invalidated, please re-authenticate.'
-        : 'An error occurred while authentcating to Box, try again later or re-authenticate.');
+        : 'An error occurred while authentcating to Box, try again later or re-authenticate.'
+    );
   }
 
   const folderId = job.postTaskOptions?.uploadFolderId || (await findCraigDirectory(accessToken, userId));

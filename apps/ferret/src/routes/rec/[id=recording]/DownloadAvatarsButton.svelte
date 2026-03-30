@@ -82,7 +82,7 @@
   onclick={onClick}
 >
   <div class="z-10 flex flex-col justify-center gap-1">
-    <span class="font-display text-bg text-xl font-bold text-white">{$t('download.avatar_zip.button_name')}</span>
+    <span class="text-bg font-display text-xl font-bold text-white">{$t('download.avatar_zip.button_name')}</span>
     <span class="text-bg text-sm text-neutral-300">
       {$t(loading ? 'common.downloading' : 'download.avatar_zip.button_description')}
     </span>

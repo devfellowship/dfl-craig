@@ -1,13 +1,12 @@
 import { json } from '@sveltejs/kit';
 
-import { checkAuth } from '$lib/server/discord';
-
-import type { RequestHandler } from './$types';
-import { rateLimitRequest } from '$lib/server/redis';
-import { prisma } from '@craig/db';
 import { getUserData } from '$lib/server/data';
+import { checkAuth } from '$lib/server/discord';
+import { rateLimitRequest } from '$lib/server/redis';
 import { errorResponse } from '$lib/server/util';
 import { APIErrorCode } from '$lib/types';
+
+import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ cookies, getClientAddress, isDataRequest }) => {
   if (!isDataRequest) {

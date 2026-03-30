@@ -50,7 +50,7 @@
 
 {#if showModal}
   <Modal class="ring-red-950/25" onclose={() => (showModal = false)} allowClose={!disconnecting}>
-    <div class="absolute left-0 right-0 top-0 z-0 h-40 max-h-[75%] bg-gradient-to-b from-red-600 to-transparent opacity-25"></div>
+    <div class="absolute top-0 right-0 left-0 z-0 h-40 max-h-[75%] bg-gradient-to-b from-red-600 to-transparent opacity-25"></div>
     <InnerModal title={$t('disconnect_patreon.header')} class="z-[1]">
       <span>{$t('disconnect_patreon.text')}</span>
 
@@ -64,7 +64,7 @@
               {$t('common.disconnect')}
             </span>
             <div
-              class="pointer-events-none absolute bottom-0 left-0 right-0 top-0 flex scale-150 items-center justify-center transition-opacity"
+              class="pointer-events-none absolute top-0 right-0 bottom-0 left-0 flex scale-150 items-center justify-center transition-opacity"
               class:opacity-0={!disconnecting}
               class:opacity-100={disconnecting}
             >

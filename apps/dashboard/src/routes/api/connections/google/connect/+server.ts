@@ -1,12 +1,14 @@
-import { checkAuth } from '$lib/server/discord';
-import { generateOAuthState, rateLimitRequest } from '$lib/server/redis';
+import { prisma } from '@craig/db';
 import { redirect } from '@sveltejs/kit';
+
 import { env } from '$env/dynamic/private';
 import { env as envPub } from '$env/dynamic/public';
-import type { RequestHandler } from './$types';
-import { prisma } from '@craig/db';
 import { googleScopes } from '$lib/oauth';
+import { checkAuth } from '$lib/server/discord';
 import { toRedirectUri } from '$lib/server/oauth';
+import { generateOAuthState, rateLimitRequest } from '$lib/server/redis';
+
+import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ cookies, getClientAddress }) => {
   if (!envPub.PUBLIC_GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET) return redirect(307, '/?error=__NO_ACCESS_TOKEN&from=google');

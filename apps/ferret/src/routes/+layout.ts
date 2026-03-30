@@ -1,12 +1,12 @@
 import '$lib/i18n';
 
 import type { Load } from '@sveltejs/kit';
+import { get } from 'svelte/store';
 import { dictionary, locale, waitLocale } from 'svelte-i18n';
 
 import { browser } from '$app/environment';
 import { get as getCookie, localeCookieName } from '$lib/cookie';
 import { device } from '$lib/device';
-import { get } from 'svelte/store';
 
 // svelte-i18n doesn't exactly wait for keys to be populated before finishing up, so this waits for that.
 function waitForLocaleUpdate() {

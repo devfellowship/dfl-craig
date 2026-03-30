@@ -152,7 +152,7 @@
         />
         <div class="flex w-full flex-col gap-2">
           <div class="flex flex-1 flex-col gap-1">
-            <span class="text-base font-medium leading-none text-neutral-200 peer-disabled:cursor-not-allowed sm:text-lg">
+            <span class="text-base leading-none font-medium text-neutral-200 peer-disabled:cursor-not-allowed sm:text-lg">
               {$t('cloud_backup.include_transcription')}
             </span>
             <p class="text-sm text-neutral-400">
@@ -179,7 +179,7 @@
               {$t('common.close')}
             </span>
             <div
-              class="pointer-events-none absolute bottom-0 left-0 right-0 top-0 flex scale-150 items-center justify-center transition-opacity"
+              class="pointer-events-none absolute top-0 right-0 bottom-0 left-0 flex scale-150 items-center justify-center transition-opacity"
               class:opacity-0={!$savingSettings || disabled}
               class:opacity-100={$savingSettings || disabled}
             >

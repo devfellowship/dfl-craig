@@ -1,8 +1,9 @@
-import { checkAuth } from '$lib/server/discord';
 import { error, redirect } from '@sveltejs/kit';
 
-import type { LayoutServerLoad } from './$types';
 import { getUserData } from '$lib/server/data';
+import { checkAuth } from '$lib/server/discord';
+
+import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ cookies, url }) => {
   const sessionCookie = cookies.get('session');

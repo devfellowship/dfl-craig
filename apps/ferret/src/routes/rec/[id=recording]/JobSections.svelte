@@ -274,7 +274,7 @@
 {/if}
 
 {#if !streamed && status === 'complete'}
-  <div class="shadow-section z-[1] inline-flex flex-col items-start justify-start gap-3 rounded-2xl border border-neutral-600 bg-zinc-900 p-6">
+  <div class="z-[1] inline-flex flex-col items-start justify-start gap-3 rounded-2xl border border-neutral-600 bg-zinc-900 p-6 shadow-section">
     <h2 class="font-display text-xl font-bold text-neutral-100 sm:text-2xl">{$t('job.previous_download')}</h2>
     <div class="flex flex-col items-start justify-start">
       <div class="text-sm font-semibold text-neutral-400 sm:text-base">{jobName}</div>

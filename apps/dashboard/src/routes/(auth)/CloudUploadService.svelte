@@ -185,7 +185,7 @@
               {$t('common.close')}
             </span>
             <div
-              class="pointer-events-none absolute bottom-0 left-0 right-0 top-0 flex scale-150 items-center justify-center transition-opacity"
+              class="pointer-events-none absolute top-0 right-0 bottom-0 left-0 flex scale-150 items-center justify-center transition-opacity"
               class:opacity-0={!loading || disabled}
               class:opacity-100={loading || disabled}
             >

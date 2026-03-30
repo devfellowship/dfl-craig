@@ -109,8 +109,9 @@ export async function onedriveUpload(job: Job, info: RecordingInfo, fileName: st
     throw new UploadError(
       authInvalidated
         ? 'Your authentication to Microsoft has been invalidated, please re-authenticate.'
-        : 'An error occurred while authentcating to Microsoft, try again later or re-authenticate.');
-    }
+        : 'An error occurred while authentcating to Microsoft, try again later or re-authenticate.'
+    );
+  }
 
   const uploadSession = await fetch(
     `https://graph.microsoft.com/v1.0/drive/special/approot:/${fileName}.${job.getExtension()}:/createUploadSession`,

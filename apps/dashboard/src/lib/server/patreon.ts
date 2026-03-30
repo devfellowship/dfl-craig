@@ -1,5 +1,6 @@
-import { env } from '$env/dynamic/private';
 import { prisma } from '@craig/db';
+
+import { env } from '$env/dynamic/private';
 
 const tierMap: { [tier: string]: number } = JSON.parse(env.PATREON_TIER_MAP ?? '{}');
 export const determineRewardTier = (tiers: string[]) => tiers.map((t) => tierMap[t] || 0).sort((a, b) => b - a)[0] || 0;

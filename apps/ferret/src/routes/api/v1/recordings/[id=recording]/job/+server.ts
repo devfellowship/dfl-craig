@@ -4,7 +4,17 @@ import { destr } from 'destr';
 import { dev } from '$app/environment';
 import { type PostJobBody, validateOptions } from '$lib/server/job';
 import { isStreamOpen } from '$lib/server/redis';
-import { cancelJob, createJob, errorResponse, getLatestJob, getRecordingInfo, minimizeJobInfo, recordingExists, safeKeyCompare, validateKey } from '$lib/server/util';
+import {
+  cancelJob,
+  createJob,
+  errorResponse,
+  getLatestJob,
+  getRecordingInfo,
+  minimizeJobInfo,
+  recordingExists,
+  safeKeyCompare,
+  validateKey
+} from '$lib/server/util';
 import { APIErrorCode } from '$lib/types';
 
 import type { RequestHandler } from './$types';

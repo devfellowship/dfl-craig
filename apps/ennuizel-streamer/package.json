@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "exports": "./dist/index.js",
+  "exports": "./dist/index.mjs",
   "license": "MIT",
   "scripts": {
     "start": "dotenv -e ../../.env -e .env -c -- node dist/index.js",
     "inspect": "dotenv -e ../../.env -e .env -c -- node --inspect=7003 dist/index.js",
     "start-pm2": "dotenv -e ../../.env -e .env -c -- pm2 start ecosystem.config.cjs",
     "reload-pm2": "dotenv -e ../../.env -e .env -c -- pm2 reload ecosystem.config.cjs --update-env",
-    "build": "rimraf dist && tsup-node src/index.ts --format esm",
+    "build": "rimraf dist && tsdown src/index.ts",
     "build-cook": "./scripts/build_cook.sh",
     "dev": "dotenv -e ../../.env -e .env -c -- tsx src/index",
     "lint": "eslint src",
@@ -28,8 +28,8 @@
   "devDependencies": {
     "@craig/types": "workspace:*",
     "@types/node": "^22.15.21",
-    "tsup": "^8.5.0",
-    "tsx": "^4.19.4",
+    "tsdown": "0.20.3",
+    "tsx": "^4.21.0",
     "typescript": "^5.8.3"
   }
 }

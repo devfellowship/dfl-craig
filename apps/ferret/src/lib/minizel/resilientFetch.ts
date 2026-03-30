@@ -49,8 +49,7 @@ export function createResilientStream(url: string, options: ResilientFetchOption
       if (!response.ok && response.status !== 206) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
       // If we requested a range but got 200, server doesn't support range requests
-      if (bytesReceived > 0 && response.status !== 206)
-        throw new Error('Server does not support Range requests; cannot resume download');
+      if (bytesReceived > 0 && response.status !== 206) throw new Error('Server does not support Range requests; cannot resume download');
 
       // Get total size from first response
       if (totalSize === null) {

@@ -13,8 +13,8 @@
     "reload-pm2": "dotenv -e ../../.env -e .env -c -- pm2 reload ecosystem.config.cjs --update-env",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "format": "prettier --write .",
-    "lint": "prettier --check . && eslint ."
+    "lint": "eslint .",
+    "format": "eslint . --fix"
   },
   "devDependencies": {
     "@craig/types": "workspace:*",
@@ -41,9 +41,6 @@
     "discord-api-types": "^0.38.37",
     "jsonwebtoken": "^9.0.3",
     "nanoid": "^5.1.6",
-    "prettier": "^3.8.0",
-    "prettier-plugin-svelte": "^3.4.1",
-    "prettier-plugin-tailwindcss": "^0.6.14",
     "svelte": "^5.46.4",
     "svelte-check": "^4.3.5",
     "svelte-floating-ui": "^1.6.2",

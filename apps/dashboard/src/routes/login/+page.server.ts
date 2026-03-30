@@ -1,5 +1,6 @@
+import { redirect } from '@sveltejs/kit';
+
 import { checkAuth } from '$lib/server/discord';
-import { error, redirect } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
 

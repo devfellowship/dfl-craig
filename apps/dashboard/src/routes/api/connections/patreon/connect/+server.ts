@@ -1,9 +1,11 @@
+import { redirect } from '@sveltejs/kit';
+
+import { env as envPub } from '$env/dynamic/public';
+import { toRedirectUri } from '$lib/oauth';
 import { checkAuth } from '$lib/server/discord';
 import { generateOAuthState, rateLimitRequest } from '$lib/server/redis';
-import { redirect } from '@sveltejs/kit';
-import { env as envPub } from '$env/dynamic/public';
+
 import type { RequestHandler } from './$types';
-import { toRedirectUri } from '$lib/oauth';
 
 export const GET: RequestHandler = async ({ cookies, getClientAddress }) => {
   if (!envPub.PUBLIC_PATREON_CLIENT_ID) return redirect(307, '/?error=__NO_ACCESS_TOKEN&from=patreon');

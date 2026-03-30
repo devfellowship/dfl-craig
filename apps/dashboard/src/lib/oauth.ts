@@ -1,5 +1,5 @@
-import { PUBLIC_BASE_URL } from '$env/static/public';
 import { env } from '$env/dynamic/public';
+import { PUBLIC_BASE_URL } from '$env/static/public';
 
 export const toRedirectUri = (service: string) => `${PUBLIC_BASE_URL}/api/connections/${service}/callback`;
 

@@ -1,15 +1,15 @@
 import { prisma } from '@craig/db';
 import { json, redirect } from '@sveltejs/kit';
+import { randomBytes } from 'crypto';
 import type { APIUser } from 'discord-api-types/v10';
 import jwt from 'jsonwebtoken';
-import { randomBytes } from 'crypto';
 
 import { DISCORD_CLIENT_SECRET, DISCORD_REDIRECT_URI, JWT_SECRET } from '$env/static/private';
 import { PUBLIC_DISCORD_CLIENT_ID } from '$env/static/public';
-import { redis, rateLimitRequest } from '$lib/server/redis';
+import { rateLimitRequest, redis } from '$lib/server/redis';
+import { INVITE_PERMISSIONS_BITFIELD } from '$lib/util';
 
 import type { RequestHandler } from './$types';
-import { INVITE_PERMISSIONS_BITFIELD } from '$lib/util';
 
 const OAUTH_URL = 'https://discord.com/oauth2/authorize';
 const TOKEN_URL = 'https://discord.com/api/oauth2/token';

@@ -609,7 +609,9 @@ export class MinizelProcessor {
           })
         );
 
-      console.debug(`[Minizel] Finalized. Tracks: ${this.streamTypes.size}, Total bytes written: ${Array.from(this.bytesWritten.values()).reduce((a, b) => a + b, 0)}`);
+      console.debug(
+        `[Minizel] Finalized. Tracks: ${this.streamTypes.size}, Total bytes written: ${Array.from(this.bytesWritten.values()).reduce((a, b) => a + b, 0)}`
+      );
 
       // Check for empty output
       const totalWritten = Array.from(this.bytesWritten.values()).reduce((a, b) => a + b, 0);

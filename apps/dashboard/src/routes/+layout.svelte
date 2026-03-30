@@ -39,13 +39,13 @@
 
 <Tooltip.Provider delayDuration={200}>
   <Header />
-  <main class="sm:pt-22 pt-12">
+  <main class="pt-12 sm:pt-22">
     {@render children?.()}
   </main>
 </Tooltip.Provider>
 
 {#if updated.current}
-  <div class="fixed left-0 right-0 top-16 z-50 mx-auto flex w-full max-w-5xl flex-col gap-4 p-4" transition:fly={{ y: 10 }}>
+  <div class="fixed top-16 right-0 left-0 z-50 mx-auto flex w-full max-w-5xl flex-col gap-4 p-4" transition:fly={{ y: 10 }}>
     <button
       class="mx-auto flex w-full cursor-pointer items-center justify-center gap-1 rounded border border-blue-500 bg-blue-500/25 px-2 py-1 text-sm text-white shadow shadow-blue-600 backdrop-blur-md transition-colors hover:bg-blue-500/50 sm:text-base"
       onclick={() => location.reload()}

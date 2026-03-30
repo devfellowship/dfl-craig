@@ -1,23 +1,20 @@
 import js from '@eslint/js';
-import importPlugin from 'eslint-plugin-import';
-import json from 'eslint-plugin-json';
+import { defineConfig } from 'eslint/config';
+// import { importX } from 'eslint-plugin-import-x';
 import prettierRules from 'eslint-plugin-prettier/recommended';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import svelte from 'eslint-plugin-svelte';
 import unusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
 import svelteParser from 'svelte-eslint-parser';
-import tseslint from 'typescript-eslint';
+import ts from 'typescript-eslint';
 
-export default tseslint.config(
+export default defineConfig(
   // JS/TS
   js.configs.recommended,
-  tseslint.configs.recommended,
-  importPlugin.flatConfigs.recommended,
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [importPlugin.flatConfigs.typescript]
-  },
+  ...ts.configs.recommended,
+  // importX.flatConfigs.recommended,
+  // importX.flatConfigs.typescript,
   {
     languageOptions: {
       ecmaVersion: 'latest',
@@ -46,17 +43,17 @@ export default tseslint.config(
           varsIgnorePattern: '^_'
         }
       ],
-      'import/first': 'warn',
-      'import/newline-after-import': 'warn',
-      'import/no-duplicates': 'warn',
-      'import/order': 0,
-      'import/default': 0,
-      'import/named': 0,
-      'import/namespace': 0,
-      'import/no-named-as-default': 0,
-      'import/no-named-as-default-member': 0,
-      'import/no-unresolved': 0,
-      'import/export': 0,
+      // 'import-x/first': 'warn',
+      // 'import-x/newline-after-import': 'warn',
+      // 'import-x/no-duplicates': 'warn',
+      // 'import-x/order': 0,
+      // 'import-x/default': 0,
+      // 'import-x/named': 0,
+      // 'import-x/namespace': 0,
+      // 'import-x/no-named-as-default': 0,
+      // 'import-x/no-named-as-default-member': 0,
+      // 'import-x/no-unresolved': 0,
+      // 'import-x/export': 0,
       'no-async-promise-executor': 0,
       'prettier/prettier': 'warn',
       'no-cond-assign': [2, 'except-parens'],
@@ -83,12 +80,6 @@ export default tseslint.config(
     rules: { 'spaced-comment': 0 }
   },
 
-  // JSON
-  {
-    files: ['**/*.json'],
-    ...json.configs['recommended-with-comments']
-  },
-
   // CJS
   {
     files: ['**/*.{cjs,cts}'],
@@ -105,7 +96,7 @@ export default tseslint.config(
     languageOptions: {
       parser: svelteParser,
       parserOptions: {
-        parser: tseslint.parser,
+        parser: ts.parser,
         extraFileExtensions: ['.svelte']
       },
       globals: {

@@ -3,17 +3,17 @@
   "version": "0.0.1",
   "license": "MIT",
   "type": "module",
-  "exports": "./dist/index.js",
+  "exports": "./dist/index.mjs",
   "files": [
     "dist/**"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
+    "build": "tsdown src/index.ts",
     "lint": "eslint ."
   },
   "devDependencies": {
     "@types/node": "^22.10.7",
-    "tsup": "^8.4.0"
+    "tsdown": "0.20.3"
   },
   "dependencies": {
     "prom-client": "^15.1.3"
