@@ -363,6 +363,21 @@ config_react(){
   \1[\"refreshPatrons\"]/"\
   "$craig_dir/apps/tasks/config/default.js"
 
+  # Write DFL overrides to local.json (read automatically by the config package)
+  if [[ -n "${RECORDING_WEBHOOK_URL:-}" ]]; then
+    cat > "$craig_dir/apps/bot/config/local.json" <<EOF
+{
+  "dexare": {
+    "craig": {
+      "recordingWebhookURL": "${RECORDING_WEBHOOK_URL}",
+      "recordingWebhookSecret": "${RECORDING_WEBHOOK_SECRET:-}"
+    }
+  }
+}
+EOF
+    info "DFL recording webhook configured: ${RECORDING_WEBHOOK_URL}"
+  fi
+
 }
 
 config_yarn(){

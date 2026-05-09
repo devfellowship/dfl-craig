@@ -1,30 +1,30 @@
 services:
   db:
-    image: postgres
+    image: postgres:16-alpine
     restart: always
     environment:
       POSTGRES_PASSWORD: craig
       POSTGRES_DB: craig
       POSTGRES_USER: craig
-    ports:
-      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U craig"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
     volumes:
-      - 'db_data:/var/lib/postgresql/data'
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - internal
+
   redis:
-    image: redis
+    image: redis:7-alpine
     restart: always
-    ports:
-      - "6379:6379"
+    networks:
+      - internal
+
   craig:
     build: .
-    ports:
-      - "3000:3000"
-      - "5029:5029"
+    restart: always
     depends_on:
       db:
         condition: service_healthy
@@ -32,9 +32,27 @@ services:
       redis:
         condition: service_started
     volumes:
-      - 'craig_rec:/app/rec'
-      - './install.config:/app/install.config:ro'
+      - craig_rec:/app/rec
+      - ./install.config:/app/install.config:ro
+    networks:
+      - internal
+      - network_public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=network_public"
+      # Download app (port 5029)
+      - "traefik.http.routers.craig-download.rule=Host(`craig.devfellowship.com`)"
+      - "traefik.http.routers.craig-download.entrypoints=websecure"
+      - "traefik.http.routers.craig-download.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.craig-download.service=craig-download-svc"
+      - "traefik.http.services.craig-download-svc.loadbalancer.server.port=5029"
 
 volumes:
   db_data:
   craig_rec:
+
+networks:
+  internal:
+    driver: bridge
+  network_public:
+    external: true
