@@ -53,6 +53,9 @@ export interface CraigBotConfig extends BaseConfig {
     };
     rewardTiers: { [tier: string]: RewardTier };
     entitlementWebhookURLs?: { url: string; key: string }[];
+    // DFL: URL to notify when a recording ends (optional)
+    recordingWebhookURL?: string;
+    recordingWebhookSecret?: string;
   };
 
   logger: {
