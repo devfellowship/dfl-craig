@@ -31,9 +31,15 @@ services:
         restart: true
       redis:
         condition: service_started
+    environment:
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - DISCORD_APP_ID=${DISCORD_APP_ID}
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+      - RECORDING_WEBHOOK_URL=${RECORDING_WEBHOOK_URL}
+      - RECORDING_WEBHOOK_SECRET=${RECORDING_WEBHOOK_SECRET}
     volumes:
       - craig_rec:/app/rec
-      - ./install.config:/app/install.config:ro
     networks:
       - internal
       - network_public

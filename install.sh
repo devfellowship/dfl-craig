@@ -469,7 +469,9 @@ config_cook(){
     exit 1 
   fi
 
-  source "$craig_dir/install.config"
+  if [[ -f "$craig_dir/install.config" ]]; then
+    source "$craig_dir/install.config"
+  fi
 
   # check if user is using linux
   OS="$(uname)"
@@ -496,14 +498,16 @@ config_cook(){
     start_postgresql
   fi
 
+  # Always re-run config so env vars from docker/dokploy are applied on every start
+  config_env
+
   if [[ ! -f "$INSTALL_MARKER" ]]; then
-    config_env
     config_react
     config_yarn
     config_cook
     touch "$INSTALL_MARKER"
   else
-    info "Skipping config: already completed"
+    info "Skipping build: already completed"
   fi
 
   start_app
