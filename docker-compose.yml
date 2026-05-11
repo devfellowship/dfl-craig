@@ -38,6 +38,30 @@ services:
       - CLIENT_SECRET=${CLIENT_SECRET}
       - RECORDING_WEBHOOK_URL=${RECORDING_WEBHOOK_URL}
       - RECORDING_WEBHOOK_SECRET=${RECORDING_WEBHOOK_SECRET}
+      - API_PORT=5029
+      - API_HOST=0.0.0.0
+      - API_HOMEPAGE=https://craig.devfellowship.com/
+      - ENNUIZEL_BASE=https://ez.craig.horse/
+      - SERVER_NAME=dfl
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DATABASE_URL=postgresql://craig:craig@db:5432/craig?schema=public
+      - NODE_VERSION=18.18.2
+      - DATABASE_NAME=craig
+      - POSTGRESQL_USER=craig
+      - POSTGRESQL_PASSWORD=craig
+      - PATREON_CLIENT_ID=unused
+      - PATREON_CLIENT_SECRET=unused
+      - PATRON_TIER_MAP={}
+      - PATREON_WEBHOOK_SECRET=unused
+      - GOOGLE_CLIENT_ID=unused
+      - GOOGLE_CLIENT_SECRET=unused
+      - MICROSOFT_CLIENT_ID=unused
+      - MICROSOFT_CLIENT_SECRET=unused
+      - DROPBOX_CLIENT_ID=unused
+      - DROPBOX_CLIENT_SECRET=unused
+      - APP_URI=http://localhost:3000
+      - JWT_SECRET=dfl-craig-jwt
     volumes:
       - craig_rec:/app/rec
     networks:
