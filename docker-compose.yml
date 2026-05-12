@@ -23,7 +23,9 @@ services:
       - internal
 
   craig:
-    build: .
+    build:
+      context: .
+      dockerfile: dockerfile
     restart: always
     depends_on:
       db:
