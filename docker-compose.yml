@@ -66,11 +66,10 @@ services:
       - craig_rec:/app/rec
     networks:
       - internal
-      - network_public
+      - dokploy-network
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=network_public"
-      # Download app (port 5029)
+      - "traefik.docker.network=dokploy-network"
       - "traefik.http.routers.craig-download.rule=Host(`craig.devfellowship.com`)"
       - "traefik.http.routers.craig-download.entrypoints=websecure"
       - "traefik.http.routers.craig-download.tls.certresolver=letsencrypt"
@@ -84,5 +83,5 @@ volumes:
 networks:
   internal:
     driver: bridge
-  network_public:
+  dokploy-network:
     external: true
