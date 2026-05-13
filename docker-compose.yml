@@ -42,7 +42,7 @@ services:
       - RECORDING_WEBHOOK_SECRET=${RECORDING_WEBHOOK_SECRET}
       - API_PORT=5029
       - API_HOST=0.0.0.0
-      - API_HOMEPAGE=https://craig.devfellowship.com/
+      - API_HOMEPAGE=https://dfl-transcription.devfellowship.com/
       - ENNUIZEL_BASE=https://ez.craig.horse/
       - SERVER_NAME=dfl
       - REDIS_HOST=redis
@@ -72,7 +72,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=dokploy-network"
-      - "traefik.http.routers.craig-download.rule=Host(`craig.devfellowship.com`)"
+      - "traefik.http.routers.craig-download.rule=Host(`dfl-transcription.devfellowship.com`)"
       - "traefik.http.routers.craig-download.entrypoints=websecure"
       - "traefik.http.routers.craig-download.tls.certresolver=letsencrypt"
       - "traefik.http.routers.craig-download.service=craig-download-svc"
