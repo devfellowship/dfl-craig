@@ -345,7 +345,7 @@ config_react(){
   DOWNLOAD_DOMAIN=$(echo "$API_HOMEPAGE" | awk -F '://' '{print $2}')
 
   # Perform in-place replacement in the config file
-  local config_file="$craig_dir/apps/bot/config/_default.js"
+  local config_file="$craig_dir/apps/bot/config/default.js"
   sed -i'' -E "s/(token:\s*)'[^']*'/\1'${DISCORD_BOT_TOKEN}'/" "$config_file"
   sed -i'' -E "s/(applicationID:\s*)'[^']*'/\1'${DISCORD_APP_ID}'/" "$config_file"
   sed -i'' -E "s/(downloadProtocol:\s*)'[^']*'/\1'${DOWNLOAD_PROTOCOL}'/" "$config_file"
