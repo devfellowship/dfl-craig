@@ -69,14 +69,8 @@ services:
     networks:
       - internal
       - dokploy-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=dokploy-network"
-      - "traefik.http.routers.craig-download.rule=Host(`dfl-transcription.devfellowship.com`)"
-      - "traefik.http.routers.craig-download.entrypoints=websecure"
-      - "traefik.http.routers.craig-download.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.craig-download.service=craig-download-svc"
-      - "traefik.http.services.craig-download-svc.loadbalancer.server.port=5029"
+    expose:
+      - "5029"
 
   cleanup-old-stack:
     image: docker:cli
