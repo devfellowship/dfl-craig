@@ -82,7 +82,7 @@ services:
     image: docker:cli
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: sh -c "docker stack rm dfl-craig 2>/dev/null; echo 'Old stack removed'; sleep 5"
+    command: sh -c "echo '=== STACKS ==='; docker stack ls 2>&1; echo '=== SERVICES ==='; docker service ls 2>&1; echo '=== CONTAINERS WITH CRAIG ==='; docker ps --format '{{.Names}} {{.Image}} {{.Status}}' 2>&1; echo '=== KILLING OLD ==='; docker stack rm dfl-craig 2>&1; docker stack rm craig 2>&1; echo '=== DONE ==='"
     restart: "no"
 
 volumes:
