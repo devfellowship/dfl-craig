@@ -82,7 +82,7 @@ services:
     image: docker:cli
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: sh -c "echo '=== STACKS ==='; docker stack ls 2>&1; echo '=== SERVICES ==='; docker service ls 2>&1; echo '=== CONTAINERS WITH CRAIG ==='; docker ps --format '{{.Names}} {{.Image}} {{.Status}}' 2>&1; echo '=== KILLING OLD ==='; docker stack rm dfl-craig 2>&1; docker stack rm craig 2>&1; echo '=== DONE ==='"
+    command: sh -c "echo '=== REMOVING OLD DISCORD BOT SERVER ==='; docker service rm dfl-discord-bot-server-3meimt 2>&1; echo '=== DONE ==='"
     restart: "no"
 
 volumes:
