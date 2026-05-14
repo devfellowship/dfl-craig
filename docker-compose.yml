@@ -82,7 +82,7 @@ services:
     image: docker:cli
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: sh -c "echo '=== REMOVING OLD DISCORD BOT SERVER ==='; docker service rm dfl-discord-bot-server-3meimt 2>&1; echo '=== DONE ==='"
+    command: sh -c "echo '=== ALL CONTAINERS ==='; docker ps --format '{{.ID}} {{.Names}} {{.Image}} {{.Ports}}' 2>&1; echo '=== SWARM SERVICES ==='; docker service ls 2>&1; echo '=== DONE ==='"
     restart: "no"
 
 volumes:
