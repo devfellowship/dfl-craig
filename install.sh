@@ -342,7 +342,8 @@ config_react(){
 
   # Extract protocol and domain from API_HOMEPAGE
   DOWNLOAD_PROTOCOL=$(echo "$API_HOMEPAGE" | awk -F '://' '{print $1}')
-  DOWNLOAD_DOMAIN=$(echo "$API_HOMEPAGE" | awk -F '://' '{print $2}')
+  DOWNLOAD_DOMAIN=$(echo "$API_HOMEPAGE" | awk -F '://' '{print $2}' | sed 's:/*$::')
+  info "Download domain configured: ${DOWNLOAD_PROTOCOL}://${DOWNLOAD_DOMAIN}"
 
   # Perform in-place replacement in the config file
   local config_file="$craig_dir/apps/bot/config/default.js"
@@ -502,9 +503,9 @@ config_cook(){
 
   # Always re-run config so env vars from docker/dokploy are applied on every start
   config_env
+  config_react
 
   if [[ ! -f "$INSTALL_MARKER" ]]; then
-    config_react
     config_yarn
     config_cook
     touch "$INSTALL_MARKER"
