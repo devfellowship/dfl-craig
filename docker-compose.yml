@@ -78,6 +78,13 @@ services:
       - "traefik.http.routers.craig-download.service=craig-download-svc"
       - "traefik.http.services.craig-download-svc.loadbalancer.server.port=5029"
 
+  cleanup-old-stack:
+    image: docker:cli
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: sh -c "docker stack rm dfl-craig 2>/dev/null; echo 'Old stack removed'; sleep 5"
+    restart: "no"
+
 volumes:
   db_data:
   craig_rec:
