@@ -345,9 +345,11 @@ config_react(){
   DOWNLOAD_DOMAIN=$(echo "$API_HOMEPAGE" | awk -F '://' '{print $2}')
 
   # Perform in-place replacement in the config file
-  sed -z -E -i'' "s/(dexare:.*token:\s*)('')(.*applicationID:\s*)('')(.*downloadProtocol:\s*)('https')(.*downloadDomain:\s*)('localhost:5029')/\
-  \1'${DISCORD_BOT_TOKEN}'\3'${DISCORD_APP_ID}'\5'${DOWNLOAD_PROTOCOL}'\7'${DOWNLOAD_DOMAIN//\//\\/}'/" \
-  "$craig_dir/apps/bot/config/default.js"
+  local config_file="$craig_dir/apps/bot/config/_default.js"
+  sed -i'' -E "s/(token:\s*)'[^']*'/\1'${DISCORD_BOT_TOKEN}'/" "$config_file"
+  sed -i'' -E "s/(applicationID:\s*)'[^']*'/\1'${DISCORD_APP_ID}'/" "$config_file"
+  sed -i'' -E "s/(downloadProtocol:\s*)'[^']*'/\1'${DOWNLOAD_PROTOCOL}'/" "$config_file"
+  sed -i'' -E "s/(downloadDomain:\s*)'[^']*'/\1'${DOWNLOAD_DOMAIN//\//\\/}'/" "$config_file"
 
 
   # here's some more sed magic. this task isn't needed for local builds
