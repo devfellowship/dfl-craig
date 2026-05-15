@@ -349,6 +349,17 @@ config_react(){
   \1'${DISCORD_BOT_TOKEN}'\3'${DISCORD_APP_ID}'\5'${DOWNLOAD_PROTOCOL}'\7'${DOWNLOAD_DOMAIN//\//\\/}'/" \
   "$craig_dir/apps/bot/config/default.js"
 
+  # Idempotent re-application: always sync downloadDomain/Protocol with current API_HOMEPAGE,
+  # even if the file was already populated by a previous install run. The sed above only
+  # matches on the original ('localhost:5029') template and silently no-ops on subsequent runs,
+  # which means changing API_HOMEPAGE in the deploy environment without rebuilding the image
+  # would leave links pointing at the old domain. The two regexes below force the values
+  # to stay in sync on every container start.
+  sed -E -i'' "s/(downloadDomain:\s*)'[^']*'/\1'${DOWNLOAD_DOMAIN//\//\\/}'/g" \
+    "$craig_dir/apps/bot/config/default.js"
+  sed -E -i'' "s/(downloadProtocol:\s*)'[^']*'/\1'${DOWNLOAD_PROTOCOL}'/g" \
+    "$craig_dir/apps/bot/config/default.js"
+
 
   # here's some more sed magic. this task isn't needed for local builds
   # we are regexing the following pattern and replacing the 2nd capture 
