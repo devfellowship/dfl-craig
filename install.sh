@@ -347,10 +347,18 @@ config_react(){
 
   # Perform in-place replacement in the config file
   local config_file="$craig_dir/apps/bot/config/default.js"
+
+  echo "[DBG-CRAIG] BEFORE sed | API_HOMEPAGE='${API_HOMEPAGE}' | DOWNLOAD_DOMAIN='${DOWNLOAD_DOMAIN}'"
+  echo "[DBG-CRAIG] BEFORE sed | downloadDomain line currently:"
+  grep -n "downloadDomain\|downloadProtocol" "$config_file" 2>&1 | sed 's/^/[DBG-CRAIG]   /' || echo "[DBG-CRAIG]   <no match>"
+
   sed -i'' -E "s/(token:\s*)'[^']*'/\1'${DISCORD_BOT_TOKEN}'/" "$config_file"
   sed -i'' -E "s/(applicationID:\s*)'[^']*'/\1'${DISCORD_APP_ID}'/" "$config_file"
   sed -i'' -E "s/(downloadProtocol:\s*)'[^']*'/\1'${DOWNLOAD_PROTOCOL}'/" "$config_file"
   sed -i'' -E "s/(downloadDomain:\s*)'[^']*'/\1'${DOWNLOAD_DOMAIN//\//\\/}'/" "$config_file"
+
+  echo "[DBG-CRAIG] AFTER sed | downloadDomain line now:"
+  grep -n "downloadDomain\|downloadProtocol" "$config_file" 2>&1 | sed 's/^/[DBG-CRAIG]   /' || echo "[DBG-CRAIG]   <no match>"
 
 
   # here's some more sed magic. this task isn't needed for local builds
