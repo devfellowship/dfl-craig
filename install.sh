@@ -387,19 +387,41 @@ config_react(){
   "$craig_dir/apps/tasks/config/default.js"
 
   # Write DFL overrides to local.json (read automatically by the config package)
-  if [[ -n "${RECORDING_WEBHOOK_URL:-}" ]]; then
-    cat > "$craig_dir/apps/bot/config/local.json" <<EOF
+  # Includes recording webhook AND redis/postgres hostnames for docker-compose service discovery.
+  local REDIS_HOST_VAL="${REDIS_HOST:-redis}"
+  local REDIS_PORT_VAL="${REDIS_PORT:-6379}"
+  cat > "$craig_dir/apps/bot/config/local.json" <<EOF
 {
+  "redis": {
+    "host": "${REDIS_HOST_VAL}",
+    "port": ${REDIS_PORT_VAL},
+    "keyPrefix": "craig:"
+  },
   "dexare": {
     "craig": {
-      "recordingWebhookURL": "${RECORDING_WEBHOOK_URL}",
+      "recordingWebhookURL": "${RECORDING_WEBHOOK_URL:-}",
       "recordingWebhookSecret": "${RECORDING_WEBHOOK_SECRET:-}"
     }
   }
 }
 EOF
-    info "DFL recording webhook configured: ${RECORDING_WEBHOOK_URL}"
-  fi
+  info "DFL config: redis=${REDIS_HOST_VAL}:${REDIS_PORT_VAL}, recordingWebhook=${RECORDING_WEBHOOK_URL:-<unset>}"
+
+  # tasks app also needs redis config — same shape
+  cat > "$craig_dir/apps/tasks/config/local.json" <<EOF
+{
+  "redis": {
+    "host": "${REDIS_HOST_VAL}",
+    "port": ${REDIS_PORT_VAL},
+    "keyPrefix": "craig:"
+  }
+}
+EOF
+
+  echo "[DBG-REDIS] local.json bot:"
+  cat "$craig_dir/apps/bot/config/local.json" | sed 's/^/[DBG-REDIS]   /'
+  echo "[DBG-REDIS] local.json tasks:"
+  cat "$craig_dir/apps/tasks/config/local.json" | sed 's/^/[DBG-REDIS]   /'
 
 }
 
