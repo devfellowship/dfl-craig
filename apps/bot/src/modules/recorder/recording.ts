@@ -378,10 +378,47 @@ export default class Recording {
 
       if (this.started)
         await this.uploadToDrive().catch((e) => this.recorder.logger.error(`Failed to upload recording ${this.id} to ${this.user.id}`, e));
+
+      if (this.started) await this.notifyWebhook();
     } catch (e) {
       // This is pretty bad, make sure to clean up any reference
       this.recorder.logger.error(`Failed to stop recording ${this.id} by ${this.user.username}#${this.user.discriminator} (${this.user.id})`, e);
       this.recorder.recordings.delete(this.channel.guild.id);
+    }
+  }
+
+  async notifyWebhook() {
+    const { recordingWebhookURL, recordingWebhookSecret, downloadProtocol, downloadDomain } = this.recorder.client.config.craig;
+    if (!recordingWebhookURL) return;
+
+    const downloadUrl = `${downloadProtocol ?? 'https'}://${downloadDomain}/rec/${this.id}?key=${this.accessKey}`;
+
+    const payload = {
+      id: this.id,
+      accessKey: this.accessKey,
+      downloadUrl,
+      guild: this.channel.guild.name,
+      guildId: this.channel.guild.id,
+      channel: this.channel.name,
+      channelId: this.channel.id,
+      requester: this.user.discriminator === '0' ? this.user.username : `${this.user.username}#${this.user.discriminator}`,
+      requesterId: this.user.id,
+      startedAt: this.startedAt?.toISOString() ?? null,
+      endedAt: new Date().toISOString()
+    };
+
+    try {
+      await fetch(recordingWebhookURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(recordingWebhookSecret ? { 'x-webhook-secret': recordingWebhookSecret } : {})
+        },
+        body: JSON.stringify(payload)
+      });
+      this.recorder.logger.info(`[webhook] Notified recording end for ${this.id}`);
+    } catch (e) {
+      this.recorder.logger.error(`[webhook] Failed to notify recording end for ${this.id}`, e);
     }
   }
 

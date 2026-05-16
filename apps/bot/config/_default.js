@@ -85,6 +85,9 @@ module.exports = {
       hardLimitWeb: 4294967296,
       // Whether to remove the nickname after finishing the recording
       removeNickname: true,
+      // DFL: Webhook URL to call when a recording ends (optional)
+      recordingWebhookURL: '',
+      recordingWebhookSecret: '',
       // Whether to recognize alistair emojis instead of craig emojis
       alistair: false,
       // The folder to put recordings in

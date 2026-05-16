@@ -1,40 +1,97 @@
 services:
   db:
-    image: postgres
+    image: postgres:16-alpine
     restart: always
     environment:
       POSTGRES_PASSWORD: craig
       POSTGRES_DB: craig
       POSTGRES_USER: craig
-    ports:
-      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U craig"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
     volumes:
-      - 'db_data:/var/lib/postgresql/data'
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - internal
+
   redis:
-    image: redis
+    image: redis:7-alpine
     restart: always
-    ports:
-      - "6379:6379"
+    networks:
+      - internal
+
   craig:
-    build: .
-    ports:
-      - "3000:3000"
-      - "5029:5029"
+    build:
+      context: .
+      dockerfile: dockerfile
+    restart: always
     depends_on:
       db:
         condition: service_healthy
         restart: true
       redis:
         condition: service_started
+    environment:
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - DISCORD_APP_ID=${DISCORD_APP_ID}
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+      - RECORDING_WEBHOOK_URL=${RECORDING_WEBHOOK_URL}
+      - RECORDING_WEBHOOK_SECRET=${RECORDING_WEBHOOK_SECRET}
+      - API_PORT=5029
+      - API_HOST=0.0.0.0
+      - API_HOMEPAGE=https://dfl-transcription.devfellowship.com/
+      - ENNUIZEL_BASE=https://ez.craig.horse/
+      - SERVER_NAME=dfl
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DATABASE_URL=postgresql://craig:craig@db:5432/craig?schema=public
+      - NODE_VERSION=18.18.2
+      - DATABASE_NAME=craig
+      - POSTGRESQL_USER=craig
+      - POSTGRESQL_PASSWORD=craig
+      - PATREON_CLIENT_ID=unused
+      - PATREON_CLIENT_SECRET=unused
+      - PATRON_TIER_MAP={}
+      - PATREON_WEBHOOK_SECRET=unused
+      - GOOGLE_CLIENT_ID=unused
+      - GOOGLE_CLIENT_SECRET=unused
+      - MICROSOFT_CLIENT_ID=unused
+      - MICROSOFT_CLIENT_SECRET=unused
+      - DROPBOX_CLIENT_ID=unused
+      - DROPBOX_CLIENT_SECRET=unused
+      - APP_URI=http://localhost:3000
+      - JWT_SECRET=dfl-craig-jwt
     volumes:
-      - 'craig_rec:/app/rec'
-      - './install.config:/app/install.config:ro'
+      - craig_rec:/app/rec
+    networks:
+      - internal
+      - dokploy-network
+    ports:
+      - "5029:5029"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=dokploy-network"
+      - "traefik.http.routers.dfl-craig-download.rule=Host(`dfl-transcription.devfellowship.com`)"
+      - "traefik.http.routers.dfl-craig-download.entrypoints=websecure"
+      - "traefik.http.routers.dfl-craig-download.tls.certresolver=letsencrypt"
+      - "traefik.http.services.dfl-craig-download-svc.loadbalancer.server.port=5029"
+
+  cleanup-old-stack:
+    image: docker:cli
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: sh -c "echo '=== ALL CONTAINERS ==='; docker ps --format '{{.ID}} {{.Names}} {{.Image}} {{.Ports}}' 2>&1; echo '=== SWARM SERVICES ==='; docker service ls 2>&1; echo '=== DONE ==='"
+    restart: "no"
 
 volumes:
   db_data:
   craig_rec:
+
+networks:
+  internal:
+    driver: bridge
+  dokploy-network:
+    external: true
