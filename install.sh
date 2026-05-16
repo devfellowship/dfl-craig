@@ -360,6 +360,18 @@ config_react(){
   echo "[DBG-CRAIG] AFTER sed | downloadDomain line now:"
   grep -n "downloadDomain\|downloadProtocol" "$config_file" 2>&1 | sed 's/^/[DBG-CRAIG]   /' || echo "[DBG-CRAIG]   <no match>"
 
+  # DEEP DEBUG: lista TODOS arquivos config e procura quem ainda tem craig.devfellowship
+  echo "[DBG-DEEP] === ls -la apps/bot/config/ ==="
+  ls -la "$craig_dir/apps/bot/config/" 2>&1 | sed 's/^/[DBG-DEEP]   /'
+  echo "[DBG-DEEP] === conteudo de cada arquivo em apps/bot/config/ (linhas download/craig) ==="
+  for f in "$craig_dir/apps/bot/config/"*; do
+    echo "[DBG-DEEP] >>> $f <<<"
+    grep -nE "download|craig\." "$f" 2>&1 | sed 's/^/[DBG-DEEP]   /'
+  done
+  echo "[DBG-DEEP] === grep craig.devfellowship em /app inteiro ==="
+  grep -rln "craig.devfellowship" /app 2>/dev/null | sed 's/^/[DBG-DEEP]   /' || echo "[DBG-DEEP]   <nenhum arquivo>"
+  echo "[DBG-DEEP] === fim DEEP debug ==="
+
 
   # here's some more sed magic. this task isn't needed for local builds
   # we are regexing the following pattern and replacing the 2nd capture 
