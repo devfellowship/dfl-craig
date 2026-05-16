@@ -539,4 +539,18 @@ config_cook(){
   info "End time: $(date +%H:%M:%S)"
   info "Log output: $craig_dir/install.log"
 
+  # DEEP DEBUG: tail PM2 process logs in background so they stream to container stdout
+  # (so we can see Discord gateway connect/disconnect/error events from API)
+  sleep 8
+  echo "[DBG-PM2] === starting tail of PM2 process logs ==="
+  ls -la /root/.pm2/logs/ 2>&1 | sed 's/^/[DBG-PM2-LS] /'
+  for f in /root/.pm2/logs/Craig-out.log /root/.pm2/logs/Craig-error.log /root/.pm2/logs/craig-horse-out.log /root/.pm2/logs/craig-horse-error.log; do
+    if [ -f "$f" ]; then
+      echo "[DBG-PM2] === $f (existing) ==="
+      tail -n 50 "$f" 2>&1 | sed 's/^/[DBG-PM2] /'
+    fi
+  done
+  # tail futuras linhas
+  ( tail -F /root/.pm2/logs/Craig-out.log /root/.pm2/logs/Craig-error.log /root/.pm2/logs/craig-horse-out.log /root/.pm2/logs/craig-horse-error.log 2>/dev/null | sed 's/^/[DBG-PM2-STREAM] /' ) &
+
 } 2>&1 | tee "$craig_dir/install.log"
