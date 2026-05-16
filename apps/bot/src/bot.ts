@@ -1,4 +1,16 @@
 import config from 'config';
+
+// DEBUG: print actual runtime config used by Craig process — to compare
+// with what's in the default.js on disk. Helps diagnose stale link issues.
+try {
+  const craigCfg: any = (config as any).get('dexare')?.craig ?? (config as any).get('craig');
+  console.log('[DBG-RUNTIME] craig.downloadProtocol =', craigCfg?.downloadProtocol);
+  console.log('[DBG-RUNTIME] craig.downloadDomain =', craigCfg?.downloadDomain);
+  console.log('[DBG-RUNTIME] config sources:', JSON.stringify((config as any).util?.getConfigSources?.() ?? 'n/a'));
+} catch (e) {
+  console.log('[DBG-RUNTIME] config read error:', e);
+}
+
 import { BaseConfig, DexareClient } from 'dexare';
 import { iterateFolder } from 'dexare/lib/util';
 import Eris from 'eris';
