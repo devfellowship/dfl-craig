@@ -108,10 +108,10 @@ module.exports = {
           features: ['mix', 'auto', 'drive', 'glowers', 'eccontinuous', 'ecflac', 'mp3']
         },
         [0]: {
-          // Default
-          recordHours: 6,
-          downloadExpiryHours: 168,
-          features: []
+          // Default — DFL self-hosted gives all features to everyone
+          recordHours: 24,
+          downloadExpiryHours: 720,
+          features: ['mix', 'auto', 'drive', 'glowers', 'eccontinuous', 'ecflac', 'mp3']
         },
         [10]: {
           // Supporters / I'm chipping in!
