@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: Build Apps
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, dfl-runner]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
