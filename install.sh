@@ -342,12 +342,35 @@ config_react(){
 
   # Extract protocol and domain from API_HOMEPAGE
   DOWNLOAD_PROTOCOL=$(echo "$API_HOMEPAGE" | awk -F '://' '{print $1}')
-  DOWNLOAD_DOMAIN=$(echo "$API_HOMEPAGE" | awk -F '://' '{print $2}')
+  DOWNLOAD_DOMAIN=$(echo "$API_HOMEPAGE" | awk -F '://' '{print $2}' | sed 's:/*$::')
+  info "Download domain configured: ${DOWNLOAD_PROTOCOL}://${DOWNLOAD_DOMAIN}"
 
   # Perform in-place replacement in the config file
-  sed -z -E -i'' "s/(dexare:.*token:\s*)('')(.*applicationID:\s*)('')(.*downloadProtocol:\s*)('https')(.*downloadDomain:\s*)('localhost:5029')/\
-  \1'${DISCORD_BOT_TOKEN}'\3'${DISCORD_APP_ID}'\5'${DOWNLOAD_PROTOCOL}'\7'${DOWNLOAD_DOMAIN//\//\\/}'/" \
-  "$craig_dir/apps/bot/config/default.js"
+  local config_file="$craig_dir/apps/bot/config/default.js"
+
+  echo "[DBG-CRAIG] BEFORE sed | API_HOMEPAGE='${API_HOMEPAGE}' | DOWNLOAD_DOMAIN='${DOWNLOAD_DOMAIN}'"
+  echo "[DBG-CRAIG] BEFORE sed | downloadDomain line currently:"
+  grep -n "downloadDomain\|downloadProtocol" "$config_file" 2>&1 | sed 's/^/[DBG-CRAIG]   /' || echo "[DBG-CRAIG]   <no match>"
+
+  sed -i'' -E "s/(token:\s*)'[^']*'/\1'${DISCORD_BOT_TOKEN}'/" "$config_file"
+  sed -i'' -E "s/(applicationID:\s*)'[^']*'/\1'${DISCORD_APP_ID}'/" "$config_file"
+  sed -i'' -E "s/(downloadProtocol:\s*)'[^']*'/\1'${DOWNLOAD_PROTOCOL}'/" "$config_file"
+  sed -i'' -E "s/(downloadDomain:\s*)'[^']*'/\1'${DOWNLOAD_DOMAIN//\//\\/}'/" "$config_file"
+
+  echo "[DBG-CRAIG] AFTER sed | downloadDomain line now:"
+  grep -n "downloadDomain\|downloadProtocol" "$config_file" 2>&1 | sed 's/^/[DBG-CRAIG]   /' || echo "[DBG-CRAIG]   <no match>"
+
+  # DEEP DEBUG: lista TODOS arquivos config e procura quem ainda tem craig.devfellowship
+  echo "[DBG-DEEP] === ls -la apps/bot/config/ ==="
+  ls -la "$craig_dir/apps/bot/config/" 2>&1 | sed 's/^/[DBG-DEEP]   /'
+  echo "[DBG-DEEP] === conteudo de cada arquivo em apps/bot/config/ (linhas download/craig) ==="
+  for f in "$craig_dir/apps/bot/config/"*; do
+    echo "[DBG-DEEP] >>> $f <<<"
+    grep -nE "download|craig\." "$f" 2>&1 | sed 's/^/[DBG-DEEP]   /'
+  done
+  echo "[DBG-DEEP] === grep craig.devfellowship em /app inteiro ==="
+  grep -rln "craig.devfellowship" /app 2>/dev/null | sed 's/^/[DBG-DEEP]   /' || echo "[DBG-DEEP]   <nenhum arquivo>"
+  echo "[DBG-DEEP] === fim DEEP debug ==="
 
   # Idempotent re-application: always sync downloadDomain/Protocol with current API_HOMEPAGE,
   # even if the file was already populated by a previous install run. The sed above only
@@ -373,6 +396,43 @@ config_react(){
   sed -z -E -i "s/(tasks:.*ignore:\s*)(\[\s*\])/\
   \1[\"refreshPatrons\"]/"\
   "$craig_dir/apps/tasks/config/default.js"
+
+  # Write DFL overrides to local.json (read automatically by the config package)
+  # Includes recording webhook AND redis/postgres hostnames for docker-compose service discovery.
+  local REDIS_HOST_VAL="${REDIS_HOST:-redis}"
+  local REDIS_PORT_VAL="${REDIS_PORT:-6379}"
+  cat > "$craig_dir/apps/bot/config/local.json" <<EOF
+{
+  "redis": {
+    "host": "${REDIS_HOST_VAL}",
+    "port": ${REDIS_PORT_VAL},
+    "keyPrefix": "craig:"
+  },
+  "dexare": {
+    "craig": {
+      "recordingWebhookURL": "${RECORDING_WEBHOOK_URL:-}",
+      "recordingWebhookSecret": "${RECORDING_WEBHOOK_SECRET:-}"
+    }
+  }
+}
+EOF
+  info "DFL config: redis=${REDIS_HOST_VAL}:${REDIS_PORT_VAL}, recordingWebhook=${RECORDING_WEBHOOK_URL:-<unset>}"
+
+  # tasks app also needs redis config — same shape
+  cat > "$craig_dir/apps/tasks/config/local.json" <<EOF
+{
+  "redis": {
+    "host": "${REDIS_HOST_VAL}",
+    "port": ${REDIS_PORT_VAL},
+    "keyPrefix": "craig:"
+  }
+}
+EOF
+
+  echo "[DBG-REDIS] local.json bot:"
+  cat "$craig_dir/apps/bot/config/local.json" | sed 's/^/[DBG-REDIS]   /'
+  echo "[DBG-REDIS] local.json tasks:"
+  cat "$craig_dir/apps/tasks/config/local.json" | sed 's/^/[DBG-REDIS]   /'
 
 }
 
@@ -465,7 +525,9 @@ config_cook(){
     exit 1 
   fi
 
-  source "$craig_dir/install.config"
+  if [[ -f "$craig_dir/install.config" ]]; then
+    source "$craig_dir/install.config"
+  fi
 
   # check if user is using linux
   OS="$(uname)"
@@ -492,14 +554,16 @@ config_cook(){
     start_postgresql
   fi
 
+  # Always re-run config so env vars from docker/dokploy are applied on every start
+  config_env
+  config_react
+
   if [[ ! -f "$INSTALL_MARKER" ]]; then
-    config_env
-    config_react
     config_yarn
     config_cook
     touch "$INSTALL_MARKER"
   else
-    info "Skipping config: already completed"
+    info "Skipping build: already completed"
   fi
 
   start_app
@@ -507,5 +571,19 @@ config_cook(){
   info "Craig installation finished..."
   info "End time: $(date +%H:%M:%S)"
   info "Log output: $craig_dir/install.log"
+
+  # DEEP DEBUG: tail PM2 process logs in background so they stream to container stdout
+  # (so we can see Discord gateway connect/disconnect/error events from API)
+  sleep 8
+  echo "[DBG-PM2] === starting tail of PM2 process logs ==="
+  ls -la /root/.pm2/logs/ 2>&1 | sed 's/^/[DBG-PM2-LS] /'
+  for f in /root/.pm2/logs/Craig-out.log /root/.pm2/logs/Craig-error.log /root/.pm2/logs/craig-horse-out.log /root/.pm2/logs/craig-horse-error.log; do
+    if [ -f "$f" ]; then
+      echo "[DBG-PM2] === $f (existing) ==="
+      tail -n 50 "$f" 2>&1 | sed 's/^/[DBG-PM2] /'
+    fi
+  done
+  # tail futuras linhas
+  ( tail -F /root/.pm2/logs/Craig-out.log /root/.pm2/logs/Craig-error.log /root/.pm2/logs/craig-horse-out.log /root/.pm2/logs/craig-horse-error.log 2>/dev/null | sed 's/^/[DBG-PM2-STREAM] /' ) &
 
 } 2>&1 | tee "$craig_dir/install.log"

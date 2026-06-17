@@ -30,12 +30,10 @@ WORKDIR /app
 
 # Copy the repo, particularly environment variables with discord API keys
 COPY . .
-# Run first-time setup for faster restarts
-RUN ./install.sh
 
 # Expose app port
 EXPOSE 3000
 # Expose API port
 EXPOSE 5029
-# Start Craig
+# Start Craig (install runs at container start with real env vars)
 CMD ["sh", "-c", "/app/install.sh && sleep infinity"]
